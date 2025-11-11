@@ -57,7 +57,7 @@ fn test_sheets_command() {
     let file_path = temp_file.path().to_str().unwrap();
 
     let output = Command::new("cargo")
-        .args(&["run", "--", "-f", file_path, "sheets"])
+        .args(["run", "--", "-f", file_path, "sheets"])
         .output()
         .expect("Failed to execute command");
 
@@ -74,7 +74,7 @@ fn test_show_command_default() {
     let file_path = temp_file.path().to_str().unwrap();
 
     let output = Command::new("cargo")
-        .args(&["run", "--", "-f", file_path, "show"])
+        .args(["run", "--", "-f", file_path, "show"])
         .output()
         .expect("Failed to execute command");
 
@@ -91,7 +91,7 @@ fn test_show_command_with_sheet_name() {
     let file_path = temp_file.path().to_str().unwrap();
 
     let output = Command::new("cargo")
-        .args(&["run", "--", "-f", file_path, "show", "-s", "Products"])
+        .args(["run", "--", "-f", file_path, "show", "-s", "Products"])
         .output()
         .expect("Failed to execute command");
 
@@ -108,7 +108,7 @@ fn test_show_command_with_sheet_index() {
     let file_path = temp_file.path().to_str().unwrap();
 
     let output = Command::new("cargo")
-        .args(&["run", "--", "-f", file_path, "show", "-s", "1", "-r", "2"])
+        .args(["run", "--", "-f", file_path, "show", "-s", "1", "-r", "2"])
         .output()
         .expect("Failed to execute command");
 
@@ -132,7 +132,7 @@ fn test_search_command_case_insensitive() {
     let file_path = temp_file.path().to_str().unwrap();
 
     let output = Command::new("cargo")
-        .args(&["run", "--", "-f", file_path, "search", "engineering"])
+        .args(["run", "--", "-f", file_path, "search", "engineering"])
         .output()
         .expect("Failed to execute command");
 
@@ -150,7 +150,7 @@ fn test_search_command_case_sensitive() {
     let file_path = temp_file.path().to_str().unwrap();
 
     let output = Command::new("cargo")
-        .args(&["run", "--", "-f", file_path, "search", "Engineering", "-c"])
+        .args(["run", "--", "-f", file_path, "search", "Engineering", "-c"])
         .output()
         .expect("Failed to execute command");
 
@@ -171,7 +171,7 @@ fn test_search_command_no_matches() {
     let file_path = temp_file.path().to_str().unwrap();
 
     let output = Command::new("cargo")
-        .args(&["run", "--", "-f", file_path, "search", "NonExistentValue"])
+        .args(["run", "--", "-f", file_path, "search", "NonExistentValue"])
         .output()
         .expect("Failed to execute command");
 
@@ -186,7 +186,7 @@ fn test_search_in_specific_sheet() {
     let file_path = temp_file.path().to_str().unwrap();
 
     let output = Command::new("cargo")
-        .args(&[
+        .args([
             "run", "--", "-f", file_path, "search", "Laptop", "-s", "Products",
         ])
         .output()
@@ -205,7 +205,7 @@ fn test_invalid_sheet_name() {
     let file_path = temp_file.path().to_str().unwrap();
 
     let output = Command::new("cargo")
-        .args(&["run", "--", "-f", file_path, "show", "-s", "InvalidSheet"])
+        .args(["run", "--", "-f", file_path, "show", "-s", "InvalidSheet"])
         .output()
         .expect("Failed to execute command");
 
@@ -220,7 +220,7 @@ fn test_invalid_sheet_index() {
     let file_path = temp_file.path().to_str().unwrap();
 
     let output = Command::new("cargo")
-        .args(&["run", "--", "-f", file_path, "show", "-s", "99"])
+        .args(["run", "--", "-f", file_path, "show", "-s", "99"])
         .output()
         .expect("Failed to execute command");
 

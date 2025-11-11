@@ -3,7 +3,7 @@ use std::process::Command;
 #[test]
 fn test_cli_help() {
     let output = Command::new("cargo")
-        .args(&["run", "--", "--help"])
+        .args(["run", "--", "--help"])
         .output()
         .expect("Failed to execute command");
 
@@ -18,7 +18,7 @@ fn test_cli_help() {
 #[test]
 fn test_cli_with_invalid_file() {
     let output = Command::new("cargo")
-        .args(&["run", "--", "-f", "nonexistent.xlsx"])
+        .args(["run", "--", "-f", "nonexistent.xlsx"])
         .output()
         .expect("Failed to execute command");
 
@@ -30,7 +30,7 @@ fn test_cli_with_invalid_file() {
 #[test]
 fn test_cli_missing_file_argument() {
     let output = Command::new("cargo")
-        .args(&["run", "--", "sheets"])
+        .args(["run", "--", "sheets"])
         .output()
         .expect("Failed to execute command");
 
@@ -43,7 +43,7 @@ fn test_cli_missing_file_argument() {
 #[test]
 fn test_build() {
     let output = Command::new("cargo")
-        .args(&["build"])
+        .args(["build"])
         .output()
         .expect("Failed to execute cargo build");
 
@@ -57,7 +57,7 @@ fn test_build() {
 #[test]
 fn test_check() {
     let output = Command::new("cargo")
-        .args(&["check"])
+        .args(["check"])
         .output()
         .expect("Failed to execute cargo check");
 

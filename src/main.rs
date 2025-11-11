@@ -106,7 +106,7 @@ mod tests {
             }) = parsed.command
             {
                 assert_eq!(value, "test");
-                assert_eq!(case_sensitive, true);
+                assert!(case_sensitive);
             } else {
                 panic!("Expected Search command");
             }

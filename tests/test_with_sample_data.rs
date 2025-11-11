@@ -5,48 +5,48 @@ use xlsxwriter::*;
 fn create_sample_excel() -> Result<NamedTempFile, Box<dyn std::error::Error>> {
     let temp_file = NamedTempFile::with_suffix(".xlsx")?;
     let path = temp_file.path().to_str().unwrap();
-    
+
     let workbook = Workbook::new(path)?;
-    
+
     // Create first sheet with employee data
     let mut sheet1 = workbook.add_worksheet(Some("Employees"))?;
     sheet1.write_string(0, 0, "ID", None)?;
     sheet1.write_string(0, 1, "Name", None)?;
     sheet1.write_string(0, 2, "Department", None)?;
     sheet1.write_string(0, 3, "Salary", None)?;
-    
+
     sheet1.write_number(1, 0, 1.0, None)?;
     sheet1.write_string(1, 1, "John Doe", None)?;
     sheet1.write_string(1, 2, "Engineering", None)?;
     sheet1.write_number(1, 3, 85000.0, None)?;
-    
+
     sheet1.write_number(2, 0, 2.0, None)?;
     sheet1.write_string(2, 1, "Jane Smith", None)?;
     sheet1.write_string(2, 2, "Marketing", None)?;
     sheet1.write_number(2, 3, 75000.0, None)?;
-    
+
     sheet1.write_number(3, 0, 3.0, None)?;
     sheet1.write_string(3, 1, "Bob Johnson", None)?;
     sheet1.write_string(3, 2, "Engineering", None)?;
     sheet1.write_number(3, 3, 90000.0, None)?;
-    
+
     // Create second sheet with product data
     let mut sheet2 = workbook.add_worksheet(Some("Products"))?;
     sheet2.write_string(0, 0, "Product", None)?;
     sheet2.write_string(0, 1, "Category", None)?;
     sheet2.write_string(0, 2, "Price", None)?;
     sheet2.write_string(0, 3, "Stock", None)?;
-    
+
     sheet2.write_string(1, 0, "Laptop", None)?;
     sheet2.write_string(1, 1, "Electronics", None)?;
     sheet2.write_number(1, 2, 1200.0, None)?;
     sheet2.write_number(1, 3, 50.0, None)?;
-    
+
     sheet2.write_string(2, 0, "Mouse", None)?;
     sheet2.write_string(2, 1, "Electronics", None)?;
     sheet2.write_number(2, 2, 25.0, None)?;
     sheet2.write_number(2, 3, 200.0, None)?;
-    
+
     workbook.close()?;
     Ok(temp_file)
 }
@@ -55,7 +55,7 @@ fn create_sample_excel() -> Result<NamedTempFile, Box<dyn std::error::Error>> {
 fn test_sheets_command() {
     let temp_file = create_sample_excel().expect("Failed to create test file");
     let file_path = temp_file.path().to_str().unwrap();
-    
+
     let output = Command::new("cargo")
         .args(&["run", "--", "-f", file_path, "sheets"])
         .output()
@@ -72,7 +72,7 @@ fn test_sheets_command() {
 fn test_show_command_default() {
     let temp_file = create_sample_excel().expect("Failed to create test file");
     let file_path = temp_file.path().to_str().unwrap();
-    
+
     let output = Command::new("cargo")
         .args(&["run", "--", "-f", file_path, "show"])
         .output()
@@ -89,7 +89,7 @@ fn test_show_command_default() {
 fn test_show_command_with_sheet_name() {
     let temp_file = create_sample_excel().expect("Failed to create test file");
     let file_path = temp_file.path().to_str().unwrap();
-    
+
     let output = Command::new("cargo")
         .args(&["run", "--", "-f", file_path, "show", "-s", "Products"])
         .output()
@@ -106,7 +106,7 @@ fn test_show_command_with_sheet_name() {
 fn test_show_command_with_sheet_index() {
     let temp_file = create_sample_excel().expect("Failed to create test file");
     let file_path = temp_file.path().to_str().unwrap();
-    
+
     let output = Command::new("cargo")
         .args(&["run", "--", "-f", file_path, "show", "-s", "1", "-r", "2"])
         .output()
@@ -118,7 +118,11 @@ fn test_show_command_with_sheet_index() {
     assert!(stdout.contains("Product"));
     // Should only show 2 rows due to -r 2 limit
     let lines: Vec<&str> = stdout.lines().collect();
-    let row_lines: Vec<&str> = lines.iter().filter(|line| line.starts_with("Row")).copied().collect();
+    let row_lines: Vec<&str> = lines
+        .iter()
+        .filter(|line| line.starts_with("Row"))
+        .copied()
+        .collect();
     assert!(row_lines.len() <= 2);
 }
 
@@ -126,7 +130,7 @@ fn test_show_command_with_sheet_index() {
 fn test_search_command_case_insensitive() {
     let temp_file = create_sample_excel().expect("Failed to create test file");
     let file_path = temp_file.path().to_str().unwrap();
-    
+
     let output = Command::new("cargo")
         .args(&["run", "--", "-f", file_path, "search", "engineering"])
         .output()
@@ -144,7 +148,7 @@ fn test_search_command_case_insensitive() {
 fn test_search_command_case_sensitive() {
     let temp_file = create_sample_excel().expect("Failed to create test file");
     let file_path = temp_file.path().to_str().unwrap();
-    
+
     let output = Command::new("cargo")
         .args(&["run", "--", "-f", file_path, "search", "Engineering", "-c"])
         .output()
@@ -154,7 +158,7 @@ fn test_search_command_case_sensitive() {
         let stderr = String::from_utf8(output.stderr).unwrap();
         panic!("Command failed with stderr: {}", stderr);
     }
-    
+
     let stdout = String::from_utf8(output.stdout).unwrap();
     assert!(stdout.contains("Searching for 'Engineering'"));
     assert!(stdout.contains("***Engineering***")); // Should highlight matches
@@ -165,7 +169,7 @@ fn test_search_command_case_sensitive() {
 fn test_search_command_no_matches() {
     let temp_file = create_sample_excel().expect("Failed to create test file");
     let file_path = temp_file.path().to_str().unwrap();
-    
+
     let output = Command::new("cargo")
         .args(&["run", "--", "-f", file_path, "search", "NonExistentValue"])
         .output()
@@ -180,9 +184,11 @@ fn test_search_command_no_matches() {
 fn test_search_in_specific_sheet() {
     let temp_file = create_sample_excel().expect("Failed to create test file");
     let file_path = temp_file.path().to_str().unwrap();
-    
+
     let output = Command::new("cargo")
-        .args(&["run", "--", "-f", file_path, "search", "Laptop", "-s", "Products"])
+        .args(&[
+            "run", "--", "-f", file_path, "search", "Laptop", "-s", "Products",
+        ])
         .output()
         .expect("Failed to execute command");
 
@@ -197,7 +203,7 @@ fn test_search_in_specific_sheet() {
 fn test_invalid_sheet_name() {
     let temp_file = create_sample_excel().expect("Failed to create test file");
     let file_path = temp_file.path().to_str().unwrap();
-    
+
     let output = Command::new("cargo")
         .args(&["run", "--", "-f", file_path, "show", "-s", "InvalidSheet"])
         .output()
@@ -212,7 +218,7 @@ fn test_invalid_sheet_name() {
 fn test_invalid_sheet_index() {
     let temp_file = create_sample_excel().expect("Failed to create test file");
     let file_path = temp_file.path().to_str().unwrap();
-    
+
     let output = Command::new("cargo")
         .args(&["run", "--", "-f", file_path, "show", "-s", "99"])
         .output()

@@ -1,7 +1,7 @@
 use anyhow::Result;
 use clap::{Parser, Subcommand};
 use std::path::PathBuf;
-use xlsq::{list_sheets, show_sheet, search_in_sheet, open_excel_file};
+use xlsq::{list_sheets, open_excel_file, search_in_sheet, show_sheet};
 
 #[derive(Parser)]
 #[command(name = "xlsq")]
@@ -72,7 +72,7 @@ mod tests {
         let args = vec!["xlsq", "-f", "test.xlsx"];
         let cli = Cli::try_parse_from(args);
         assert!(cli.is_ok());
-        
+
         // Test sheets command
         let args = vec!["xlsq", "-f", "test.xlsx", "sheets"];
         let cli = Cli::try_parse_from(args);
@@ -80,7 +80,7 @@ mod tests {
         if let Ok(parsed) = cli {
             assert!(matches!(parsed.command, Some(Commands::Sheets)));
         }
-        
+
         // Test show command with options
         let args = vec!["xlsq", "-f", "test.xlsx", "show", "-s", "1", "-r", "5"];
         let cli = Cli::try_parse_from(args);
@@ -93,13 +93,18 @@ mod tests {
                 panic!("Expected Show command");
             }
         }
-        
+
         // Test search command
         let args = vec!["xlsq", "-f", "test.xlsx", "search", "test", "-c"];
         let cli = Cli::try_parse_from(args);
         assert!(cli.is_ok());
         if let Ok(parsed) = cli {
-            if let Some(Commands::Search { value, case_sensitive, .. }) = parsed.command {
+            if let Some(Commands::Search {
+                value,
+                case_sensitive,
+                ..
+            }) = parsed.command
+            {
                 assert_eq!(value, "test");
                 assert_eq!(case_sensitive, true);
             } else {
